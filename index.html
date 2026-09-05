@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Response Quality Evaluator</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#182033}
+.wrap{max-width:900px;margin:0 auto;padding:32px 18px}.card{background:white;border:1px solid #e3e7ef;border-radius:18px;padding:24px;box-shadow:0 8px 30px rgba(20,30,55,.07)}
+h1{margin:0 0 8px;font-size:28px}p{color:#5c667a}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+label{font-weight:700;font-size:14px;display:block;margin-bottom:7px}textarea{width:100%;min-height:130px;border:1px solid #d8deea;border-radius:12px;padding:12px;font:inherit;resize:vertical}
+.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}.score{border:1px solid #e0e5ee;border-radius:12px;padding:12px;text-align:center}.score b{display:block;font-size:22px;margin-top:5px}
+button{border:0;border-radius:11px;padding:12px 18px;font-weight:700;cursor:pointer;background:#5b35c9;color:#fff}
+.result{margin-top:18px;padding:16px;border-radius:12px;background:#f3f0ff}.small{font-size:13px;color:#687287}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.scores{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+<h1>AI Response Quality Evaluator</h1>
+<p>Evaluate an AI-generated response using practical quality criteria and record reviewer feedback.</p>
+<div class="grid">
+<div><label>Prompt / Question</label><textarea id="prompt" placeholder="Enter the user's prompt..."></textarea></div>
+<div><label>AI Response</label><textarea id="answer" placeholder="Paste the AI response..."></textarea></div>
+</div>
+<div class="scores">
+<div class="score">Accuracy<b id="a">1</b></div>
+<div class="score">Relevance<b id="r">1</b></div>
+<div class="score">Clarity<b id="c">1</b></div>
+<div class="score">Safety<b id="s">1</b></div>
+<div class="score">Overall<b id="o">1</b></div>
+</div>
+<button onclick="evaluate()">Evaluate Response</button>
+<div id="result" class="result" style="display:none"></div>
+<p class="small">Built as a portfolio prototype for AI data annotation, evaluation and quality assurance workflows.</p>
+</div></div>
+<script>
+function evaluate(){
+ const p=document.getElementById('prompt').value.trim(), a=document.getElementById('answer').value.trim();
+ if(!p||!a){alert('Enter both the prompt and AI response.');return}
+ const words=a.split(/\s+/).length, hasLong=words>20;
+ const scores={acc:hasLong?4:3,rel:hasLong?4:3,clar:words<120?5:4,safe:5};
+ const overall=Math.round((scores.acc+scores.rel+scores.clar+scores.safe)/4);
+ document.getElementById('a').textContent=scores.acc+'/5';document.getElementById('r').textContent=scores.rel+'/5';
+ document.getElementById('c').textContent=scores.clar+'/5';document.getElementById('s').textContent=scores.safe+'/5';document.getElementById('o').textContent=overall+'/5';
+ const box=document.getElementById('result');box.style.display='block';
+ box.innerHTML='<b>Evaluation complete.</b><br>Overall quality: '+overall+'/5. Review the individual scores and add human notes before using this result for a production annotation workflow.';
+}
+</script>
+</body>
+</html>
