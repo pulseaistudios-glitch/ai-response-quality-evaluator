@@ -1,102 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Response Quality Evaluator</title>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Response Quality Evaluator</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#182033}
-.wrap{max-width:900px;margin:auto;padding:28px 16px}
-.card{background:#fff;border:1px solid #e3e7ef;border-radius:18px;padding:24px;box-shadow:0 8px 30px rgba(20,30,55,.07)}
-h1{margin:0 0 8px;font-size:28px}
-.intro{color:#5c667a;line-height:1.5}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
-label{font-weight:700;font-size:14px;display:block;margin-bottom:7px}
-textarea{width:100%;min-height:140px;border:1px solid #d8deea;border-radius:12px;padding:13px;font:inherit;resize:vertical}
-.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:20px 0}
-.score{border:1px solid #e0e5ee;border-radius:12px;padding:13px;text-align:center}
-.score span{display:block;color:#5c667a;font-size:14px}
-.score b{display:block;font-size:22px;margin-top:6px}
-button{border:0;border-radius:11px;padding:14px 20px;font-weight:700;font-size:16px;cursor:pointer;background:#5b35c9;color:white;width:100%}
-button:active{transform:scale(.99)}
-.result{margin-top:18px;padding:16px;border-radius:12px;background:#f3f0ff;line-height:1.6}
-.error{margin-top:14px;padding:12px;border-radius:10px;background:#fff3f3}
-.small{font-size:13px;color:#687287}
-@media(max-width:700px){
- .grid{grid-template-columns:1fr}
- .scores{grid-template-columns:repeat(2,1fr)}
-}
-</style>
-</head>
-<body>
-<div class="wrap">
-<div class="card">
-<h1>AI Response Quality Evaluator</h1>
-<p class="intro">Evaluate an AI-generated response using practical quality criteria and record reviewer feedback.</p>
-
-<div class="grid">
-<div>
-<label for="prompt">Prompt / Question</label>
-<textarea id="prompt" placeholder="Enter the user's prompt..."></textarea>
-</div>
-<div>
-<label for="answer">AI Response</label>
-<textarea id="answer" placeholder="Paste the AI response..."></textarea>
-</div>
-</div>
-
-<div class="scores">
-<div class="score"><span>Accuracy</span><b id="accuracy">—</b></div>
-<div class="score"><span>Relevance</span><b id="relevance">—</b></div>
-<div class="score"><span>Clarity</span><b id="clarity">—</b></div>
-<div class="score"><span>Safety</span><b id="safety">—</b></div>
-<div class="score"><span>Overall</span><b id="overall">—</b></div>
-</div>
-
-<button id="evaluateButton" type="button">Evaluate Response</button>
-<div id="message"></div>
-
-<p class="small">Portfolio prototype for AI data annotation, response evaluation and quality assurance workflows.</p>
-</div>
-</div>
-
+:root{--a:#5b35c9;--bg:#f4f6fb;--line:#e1e6ef;--muted:#667085;--good:#16804a;--bad:#c73636}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#172033;font-family:system-ui,Arial}.top{background:white;border-bottom:1px solid var(--line);padding:16px 20px;font-weight:800}.wrap{max-width:1100px;margin:auto;padding:24px 16px}.hero{display:flex;justify-content:space-between;gap:15px;align-items:end;margin-bottom:18px}h1{margin:0 0 5px;font-size:29px}.muted{color:var(--muted)}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.primary{background:var(--a);color:#fff}.secondary{background:#edf0f5}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:18px}.tab{background:#fff;border:1px solid var(--line);white-space:nowrap}.tab.on{background:var(--a);color:#fff}.panel{display:none}.panel.on{display:block}.grid{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 5px 20px #19233c0b}.card h2{font-size:18px;margin:0 0 15px}.field{margin:0 0 14px}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}textarea,input,select{width:100%;border:1px solid #d4dae5;border-radius:10px;padding:11px;font:inherit;background:white}textarea{min-height:125px;resize:vertical}.two,.criteria,.metrics{display:grid;gap:12px}.two{grid-template-columns:1fr 1fr}.criteria{grid-template-columns:1fr 1fr}.criterion{border:1px solid var(--line);border-radius:12px;padding:12px}.criterion b{font-size:14px}.criterion output{float:right;color:var(--a);font-weight:800}input[type=range]{accent-color:var(--a);padding:0;margin-top:10px}.hint{font-size:12px;color:var(--muted);margin-top:5px}.metrics{grid-template-columns:1fr 1fr}.metric{border:1px solid var(--line);border-radius:12px;padding:12px}.metric small{color:var(--muted)}.metric strong{display:block;font-size:23px;margin-top:4px}.status{padding:14px;border-radius:12px;text-align:center;font-weight:800;background:#fff7df;color:#8a6200}.pass{background:#eaf8f0;color:var(--good)}.fail{background:#fff0f0;color:var(--bad)}.actions{display:flex;gap:9px;flex-wrap:wrap}.case{border:1px solid var(--line);border-radius:12px;padding:14px;margin:9px 0;cursor:pointer}.case b{display:block}.badge{font-size:11px;background:#edf0f5;border-radius:99px;padding:4px 7px;margin-left:7px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.empty{text-align:center;color:var(--muted);padding:25px}footer{text-align:center;color:var(--muted);font-size:12px;margin:20px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}@media(max-width:600px){.criteria,.two{grid-template-columns:1fr}.hero{display:block}h1{font-size:25px}}
+</style></head><body>
+<div class="top">AI Response Quality Evaluator <span style="float:right;font-size:12px;color:#5b35c9">PORTFOLIO PROTOTYPE</span></div>
+<main class="wrap"><div class="hero"><div><h1>Reviewer Dashboard</h1><div class="muted">Structured human review for AI-generated responses.</div></div><div class="actions"><button class="secondary" id="sample">Load Sample</button><button class="secondary" id="export">Export Reviews</button></div></div>
+<div class="tabs"><button class="tab on" data-p="review">Review</button><button class="tab" data-p="cases">Sample Test Cases</button><button class="tab" data-p="history">Review History</button><button class="tab" data-p="about">About</button></div>
+<section id="review" class="panel on"><div class="grid"><div>
+<div class="card"><h2>1. Response Under Review</h2><div class="field"><label>Prompt / Question</label><textarea id="prompt" placeholder="Enter the user's prompt..."></textarea></div><div class="field"><label>AI Response</label><textarea id="answer" placeholder="Paste the AI-generated response..."></textarea></div><div class="two"><div class="field"><label>Category</label><select id="category"><option>General QA</option><option>Knowledge</option><option>Writing</option><option>Translation</option><option>Summarization</option><option>Safety</option></select></div><div class="field"><label>Issue severity</label><select id="severity"><option>None</option><option>Minor</option><option>Major</option><option>Critical</option></select></div></div></div>
+<div class="card"><h2>2. Manual Quality Scoring</h2><div class="criteria" id="criteria"></div></div>
+<div class="card"><h2>3. Reviewer Notes & Decision</h2><div class="field"><label>Evaluation notes</label><textarea id="notes" placeholder="Explain strengths, errors, missing information or safety concerns."></textarea></div><div class="two"><div class="field"><label>Final decision</label><select id="decision"><option>Pass</option><option>Needs Review</option><option>Fail</option></select></div><div class="field"><label>Reviewer name / ID</label><input id="reviewer" placeholder="Reviewer-001"></div></div><div class="actions"><button class="primary" id="save">Save Evaluation</button><button class="secondary" id="clear">Clear Form</button></div></div>
+</div><aside><div class="card"><h2>Current Result</h2><div id="status" class="status">Awaiting evaluation</div><div class="metrics" style="margin-top:12px"><div class="metric"><small>Overall</small><strong id="overall">—</strong></div><div class="metric"><small>Accuracy</small><strong id="ma">—</strong></div><div class="metric"><small>Relevance</small><strong id="mr">—</strong></div><div class="metric"><small>Safety</small><strong id="ms">—</strong></div></div></div>
+<div class="card"><h2>Reviewer Checklist</h2><ul><li>Does it answer the prompt?</li><li>Is it accurate?</li><li>Is it clear?</li><li>Is it complete enough?</li><li>Is it safe and non-misleading?</li><li>Do the notes justify the decision?</li></ul></div></aside></div></section>
+<section id="cases" class="panel"><div class="card"><h2>Sample Test Cases</h2><p class="muted">Tap a case to load it for review.</p><div id="caseList"></div></div></section>
+<section id="history" class="panel"><div class="card"><h2>Saved Review History</h2><div style="overflow:auto"><table class="table"><thead><tr><th>Category</th><th>Score</th><th>Decision</th><th>Severity</th><th>Reviewer</th></tr></thead><tbody id="history"></tbody></table></div></div></section>
+<section id="about" class="panel"><div class="card"><h2>About this project</h2><p>This portfolio prototype demonstrates a human-in-the-loop workflow for evaluating AI-generated responses. Reviewers manually score Accuracy, Relevance, Clarity, Completeness and Safety, add evidence-based notes, and make a Pass / Needs Review / Fail decision.</p><p><b>Technology:</b> HTML, CSS and vanilla JavaScript. Review history is stored locally in the browser; no paid API or server is required.</p><p><b>Important:</b> This prototype does not claim to independently fact-check responses. It is designed to demonstrate structured review and QA skills.</p></div></section>
+<footer>AI evaluation • Data annotation • Quality assurance • Human-in-the-loop review</footer></main>
 <script>
-(function () {
-  function runEvaluation() {
-    var prompt = document.getElementById("prompt").value.trim();
-    var answer = document.getElementById("answer").value.trim();
-    var message = document.getElementById("message");
+const defs=[["Accuracy","Factual correctness and absence of unsupported claims."],["Relevance","Directly addresses the user's request."],["Clarity","Readable, coherent and easy to understand."],["Completeness","Sufficiently addresses the request."],["Safety","Avoids harmful, unsafe or seriously misleading guidance."]];
+const samples=[
+["Basic AI definition","Knowledge","What is artificial intelligence?","Artificial intelligence is technology that enables computers to perform tasks that normally require human intelligence, such as understanding language, recognizing patterns, and making predictions."],
+["Off-topic response","General QA","What is data annotation?","The weather can change throughout the day. People often check forecasts before traveling."],
+["Luganda translation","Translation","Translate 'Good morning' into Luganda.","Wasuze otya?"],
+["Concise summary","Summarization","Summarize: Machine learning systems learn patterns from examples and use those patterns to make predictions on new data.","Machine learning finds patterns in examples and uses them to make predictions."]
+];
+const cbox=document.getElementById("criteria");
+defs.forEach((d,i)=>{cbox.insertAdjacentHTML("beforeend",`<div class="criterion"><b>${d[0]}</b><output id="o${i}">3/5</output><input id="r${i}" type="range" min="1" max="5" value="3"><div class="hint">${d[1]}</div></div>`);document.getElementById("r"+i).oninput=()=>{document.getElementById("o"+i).textContent=document.getElementById("r"+i).value+"/5";result()}});
 
-    if (!prompt || !answer) {
-      message.className = "error";
-      message.textContent = "Please enter both a prompt/question and an AI response.";
-      return;
-    }
+function scores(){return defs.map((_,i)=>+document.getElementById("r"+i).value)}
+function result(){let s=scores(),avg=s.reduce((a,b)=>a+b,0)/5;document.getElementById("overall").textContent=avg.toFixed(1)+"/5";document.getElementById("ma").textContent=s[0]+"/5";document.getElementById("mr").textContent=s[1]+"/5";document.getElementById("ms").textContent=s[4]+"/5";let d=document.getElementById("decision").value,st=document.getElementById("status");st.className="status "+(d=="Pass"?"pass":d=="Fail"?"fail":"");st.textContent=d+" • "+avg.toFixed(1)+"/5"}
+document.getElementById("decision").onchange=result;
 
-    var words = answer.split(/\s+/).filter(Boolean).length;
-    var sentences = answer.split(/[.!?]+/).filter(function(x){return x.trim().length > 0;}).length;
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));t.classList.add("on");document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));document.getElementById(t.dataset.p).classList.add("on");if(t.dataset.p=="history")render()});
+function load(a){document.getElementById("category").value=a[1];document.getElementById("prompt").value=a[2];document.getElementById("answer").value=a[3];document.getElementById("notes").value="Sample case loaded. Review each criterion and justify the final decision.";document.querySelector('[data-p="review"]').click()}
+document.getElementById("caseList").innerHTML=samples.map((x,i)=>`<div class="case" onclick="load(samples[${i}])"><b>${x[0]} <span class="badge">${x[1]}</span></b><span class="muted">${x[2]}</span></div>`).join("");
+document.getElementById("sample").onclick=()=>load(samples[0]);
 
-    var accuracy = words >= 8 ? 4 : 3;
-    var relevance = prompt.length > 10 && words >= 8 ? 4 : 3;
-    var clarity = (words <= 120 && sentences >= 1) ? 5 : 4;
-    var safety = 5;
-    var overall = Math.round((accuracy + relevance + clarity + safety) / 4);
-
-    document.getElementById("accuracy").textContent = accuracy + "/5";
-    document.getElementById("relevance").textContent = relevance + "/5";
-    document.getElementById("clarity").textContent = clarity + "/5";
-    document.getElementById("safety").textContent = safety + "/5";
-    document.getElementById("overall").textContent = overall + "/5";
-
-    message.className = "result";
-    message.innerHTML = "<strong>Evaluation complete.</strong><br>" +
-      "The response received an overall score of <strong>" + overall + "/5</strong>." +
-      "<br>Word count: " + words + ". Review the individual criteria before using the result in a real annotation workflow.";
-  }
-
-  document.getElementById("evaluateButton").addEventListener("click", runEvaluation);
-})();
-</script>
-</body>
-</html>
+function save(){let p=prompt.value.trim(),a=answer.value.trim();if(!p||!a){alert("Enter both the prompt and AI response.");return}let s=scores(),h=JSON.parse(localStorage.getItem("aiReviews")||"[]");h.unshift({category:category.value,severity:severity.value,decision:decision.value,reviewer:reviewer.value||"Anonymous",score:(s.reduce((x,y)=>x+y,0)/5).toFixed(1),notes:notes.value,prompt:p,answer:a});localStorage.setItem("aiReviews",JSON.stringify(h.slice(0,50)));alert("Evaluation saved.");render()}
+document.getElementById("save").onclick=save;
+function render(){let h=JSON.parse(localStorage.getItem("aiReviews")||"[]"),b=document.getElementById("history");b.innerHTML=h.length?h.map(x=>`<tr><td>${x.category}</td><td>${x.score}/5</td><td>${x.decision}</td><td>${x.severity}</td><td>${x.reviewer}</td></tr>`).join(""):`<tr><td colspan="5" class="empty">No saved evaluations yet.</td></tr>`}
+document.getElementById("export").onclick=()=>{let b=new Blob([localStorage.getItem("aiReviews")||"[]"],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="ai-review-history.json";a.click()};
+document.getElementById("clear").onclick=()=>{["prompt","answer","notes","reviewer"].forEach(id=>document.getElementById(id).value="");for(let i=0;i<5;i++){document.getElementById("r"+i).value=3;document.getElementById("o"+i).textContent="3/5"}result()};
+result();render();
+</script></body></html>
