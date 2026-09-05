@@ -5,47 +5,98 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Response Quality Evaluator</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#182033}
-.wrap{max-width:900px;margin:0 auto;padding:32px 18px}.card{background:white;border:1px solid #e3e7ef;border-radius:18px;padding:24px;box-shadow:0 8px 30px rgba(20,30,55,.07)}
-h1{margin:0 0 8px;font-size:28px}p{color:#5c667a}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
-label{font-weight:700;font-size:14px;display:block;margin-bottom:7px}textarea{width:100%;min-height:130px;border:1px solid #d8deea;border-radius:12px;padding:12px;font:inherit;resize:vertical}
-.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}.score{border:1px solid #e0e5ee;border-radius:12px;padding:12px;text-align:center}.score b{display:block;font-size:22px;margin-top:5px}
-button{border:0;border-radius:11px;padding:12px 18px;font-weight:700;cursor:pointer;background:#5b35c9;color:#fff}
-.result{margin-top:18px;padding:16px;border-radius:12px;background:#f3f0ff}.small{font-size:13px;color:#687287}
-@media(max-width:700px){.grid{grid-template-columns:1fr}.scores{grid-template-columns:repeat(2,1fr)}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#182033}
+.wrap{max-width:900px;margin:auto;padding:28px 16px}
+.card{background:#fff;border:1px solid #e3e7ef;border-radius:18px;padding:24px;box-shadow:0 8px 30px rgba(20,30,55,.07)}
+h1{margin:0 0 8px;font-size:28px}
+.intro{color:#5c667a;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+label{font-weight:700;font-size:14px;display:block;margin-bottom:7px}
+textarea{width:100%;min-height:140px;border:1px solid #d8deea;border-radius:12px;padding:13px;font:inherit;resize:vertical}
+.scores{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:20px 0}
+.score{border:1px solid #e0e5ee;border-radius:12px;padding:13px;text-align:center}
+.score span{display:block;color:#5c667a;font-size:14px}
+.score b{display:block;font-size:22px;margin-top:6px}
+button{border:0;border-radius:11px;padding:14px 20px;font-weight:700;font-size:16px;cursor:pointer;background:#5b35c9;color:white;width:100%}
+button:active{transform:scale(.99)}
+.result{margin-top:18px;padding:16px;border-radius:12px;background:#f3f0ff;line-height:1.6}
+.error{margin-top:14px;padding:12px;border-radius:10px;background:#fff3f3}
+.small{font-size:13px;color:#687287}
+@media(max-width:700px){
+ .grid{grid-template-columns:1fr}
+ .scores{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
-<div class="wrap"><div class="card">
+<div class="wrap">
+<div class="card">
 <h1>AI Response Quality Evaluator</h1>
-<p>Evaluate an AI-generated response using practical quality criteria and record reviewer feedback.</p>
+<p class="intro">Evaluate an AI-generated response using practical quality criteria and record reviewer feedback.</p>
+
 <div class="grid">
-<div><label>Prompt / Question</label><textarea id="prompt" placeholder="Enter the user's prompt..."></textarea></div>
-<div><label>AI Response</label><textarea id="answer" placeholder="Paste the AI response..."></textarea></div>
+<div>
+<label for="prompt">Prompt / Question</label>
+<textarea id="prompt" placeholder="Enter the user's prompt..."></textarea>
 </div>
+<div>
+<label for="answer">AI Response</label>
+<textarea id="answer" placeholder="Paste the AI response..."></textarea>
+</div>
+</div>
+
 <div class="scores">
-<div class="score">Accuracy<b id="a">1</b></div>
-<div class="score">Relevance<b id="r">1</b></div>
-<div class="score">Clarity<b id="c">1</b></div>
-<div class="score">Safety<b id="s">1</b></div>
-<div class="score">Overall<b id="o">1</b></div>
+<div class="score"><span>Accuracy</span><b id="accuracy">—</b></div>
+<div class="score"><span>Relevance</span><b id="relevance">—</b></div>
+<div class="score"><span>Clarity</span><b id="clarity">—</b></div>
+<div class="score"><span>Safety</span><b id="safety">—</b></div>
+<div class="score"><span>Overall</span><b id="overall">—</b></div>
 </div>
-<button onclick="evaluate()">Evaluate Response</button>
-<div id="result" class="result" style="display:none"></div>
-<p class="small">Built as a portfolio prototype for AI data annotation, evaluation and quality assurance workflows.</p>
-</div></div>
+
+<button id="evaluateButton" type="button">Evaluate Response</button>
+<div id="message"></div>
+
+<p class="small">Portfolio prototype for AI data annotation, response evaluation and quality assurance workflows.</p>
+</div>
+</div>
+
 <script>
-function evaluate(){
- const p=document.getElementById('prompt').value.trim(), a=document.getElementById('answer').value.trim();
- if(!p||!a){alert('Enter both the prompt and AI response.');return}
- const words=a.split(/\s+/).length, hasLong=words>20;
- const scores={acc:hasLong?4:3,rel:hasLong?4:3,clar:words<120?5:4,safe:5};
- const overall=Math.round((scores.acc+scores.rel+scores.clar+scores.safe)/4);
- document.getElementById('a').textContent=scores.acc+'/5';document.getElementById('r').textContent=scores.rel+'/5';
- document.getElementById('c').textContent=scores.clar+'/5';document.getElementById('s').textContent=scores.safe+'/5';document.getElementById('o').textContent=overall+'/5';
- const box=document.getElementById('result');box.style.display='block';
- box.innerHTML='<b>Evaluation complete.</b><br>Overall quality: '+overall+'/5. Review the individual scores and add human notes before using this result for a production annotation workflow.';
-}
+(function () {
+  function runEvaluation() {
+    var prompt = document.getElementById("prompt").value.trim();
+    var answer = document.getElementById("answer").value.trim();
+    var message = document.getElementById("message");
+
+    if (!prompt || !answer) {
+      message.className = "error";
+      message.textContent = "Please enter both a prompt/question and an AI response.";
+      return;
+    }
+
+    var words = answer.split(/\s+/).filter(Boolean).length;
+    var sentences = answer.split(/[.!?]+/).filter(function(x){return x.trim().length > 0;}).length;
+
+    var accuracy = words >= 8 ? 4 : 3;
+    var relevance = prompt.length > 10 && words >= 8 ? 4 : 3;
+    var clarity = (words <= 120 && sentences >= 1) ? 5 : 4;
+    var safety = 5;
+    var overall = Math.round((accuracy + relevance + clarity + safety) / 4);
+
+    document.getElementById("accuracy").textContent = accuracy + "/5";
+    document.getElementById("relevance").textContent = relevance + "/5";
+    document.getElementById("clarity").textContent = clarity + "/5";
+    document.getElementById("safety").textContent = safety + "/5";
+    document.getElementById("overall").textContent = overall + "/5";
+
+    message.className = "result";
+    message.innerHTML = "<strong>Evaluation complete.</strong><br>" +
+      "The response received an overall score of <strong>" + overall + "/5</strong>." +
+      "<br>Word count: " + words + ". Review the individual criteria before using the result in a real annotation workflow.";
+  }
+
+  document.getElementById("evaluateButton").addEventListener("click", runEvaluation);
+})();
 </script>
 </body>
 </html>
